@@ -1,10 +1,8 @@
 name: Build Plugins
-
 on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,36 +15,24 @@ jobs:
       with:
         node-version: '20'
         
-    - name: Install dependencies
-      run: |
-        npm install -g typescript
-        npm install cheerio
-        
     - name: Build plugins
       run: |
         mkdir -p .dist
-        # Create the plugins.min.json manifest
-        echo '{
-          "name": "Cenele Repository",
-          "description": "Custom repository for Arabic light novels",
-          "author": "Korosakizaki",
-          "version": "1.0.0",
-          "sources": [
-            {
-              "id": "cenele-arabic",
-              "name": "Cenele Arabic",
-              "description": "Cenele.com - Arabic Light Novels",
-              "author": "Korosakizaki",
-              "version": "1.0.0",
-              "language": "Arabic",
-              "site": "https://cenele.com/",
-              "icon": "https://raw.githubusercontent.com/Korosakizaki/lnreader-cenele-plugin/main/src/ar/cenele/icon.png",
-              "url": "https://raw.githubusercontent.com/Korosakizaki/lnreader-cenele-plugin/main/src/ar/cenele/Cenele.ts",
-              "type": "source",
-              "languageCode": "ar"
-            }
-          ]
-        }' > .dist/plugins.min.json
+        # Create the correct plugins.json manifest for LNReader
+        echo '[
+          {
+            "id": "cenele-arabic",
+            "name": "Cenele Arabic",
+            "site": "https://cenele.com/",
+            "lang": "العربية",
+            "version": "1.0.0",
+            "url": "https://raw.githubusercontent.com/Korosakizaki/lnreader-cenele-plugin/main/src/ar/cenele/Cenele.js",
+            "iconUrl": "https://raw.githubusercontent.com/Korosakizaki/lnreader-cenele-plugin/main/src/ar/cenele/icon.png"
+          }
+        ]' > .dist/plugins.json
+        
+        # Create minified version
+        cat .dist/plugins.json | tr -d '\n\t ' > .dist/plugins.min.json
         
     - name: Deploy to plugins branch
       uses: peaceiris/actions-gh-pages@v3
