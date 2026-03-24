@@ -1,0 +1,22 @@
+Index
+{
+  "name": "Cenele Repository",
+  "description": "Custom repository for Arabic light novels",
+  "author": "Korosakizaki",
+  "version": "1.0.0",
+  "sources": [
+    {
+      "id": "cenele-arabic",
+      "name": "Cenele Arabic",
+      "description": "Cenele.com - Arabic Light Novels and Web Novels",
+      "author": "Korosakizaki",
+      "version": "1.0.0",
+      "language": "Arabic",
+      "site": "https://cenele.com/",
+      "icon": "https://raw.githubusercontent.com/Korosakizaki/lnreader-cenele-plugin/main/src/ar/cenele/icon.png",
+      "url": "https://raw.githubusercontent.com/Korosakizaki/lnreader-cenele-plugin/main/src/ar/cenele/Cenele.ts",
+      "type": "source",
+      "languageCode": "ar"
+    }
+  ]
+}
