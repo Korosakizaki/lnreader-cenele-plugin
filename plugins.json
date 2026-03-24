@@ -1,4 +1,3 @@
-Index
 {
   "name": "Cenele Repository",
   "description": "Custom repository for Arabic light novels",
@@ -14,7 +13,7 @@ Index
       "language": "Arabic",
       "site": "https://cenele.com/",
       "icon": "https://raw.githubusercontent.com/Korosakizaki/lnreader-cenele-plugin/main/src/ar/cenele/icon.png",
-      "url": "https://raw.githubusercontent.com/Korosakizaki/lnreader-cenele-plugin/main/src/ar/cenele/Cenele.ts",
+      "url": "https://raw.githubusercontent.com/Korosakizaki/lnreader-cenele-plugin/main/src/ar/cenele/Cenele.js",
       "type": "source",
       "languageCode": "ar"
     }
