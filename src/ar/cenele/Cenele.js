@@ -17,12 +17,12 @@ const defaultCover = 'https://via.placeholder.com/150';
 
 class CenelePlugin {
   constructor() {
-    this.id = 'cenele';
-    this.name = 'Cenele';
+    this.id = 'cenele-arabic';
+    this.name = 'CeneleArabic';
     this.site = 'https://cenele.com/';
-    this.version = '1.0.14';
+    this.version = '1.0.16';
     this.icon = 'src/ar/cenele/icon.png';
-    this.language = 'Arabic';
+    this.language = 'العربية';
   }
 
   async popularNovels(pageNo) {
@@ -103,6 +103,5 @@ class CenelePlugin {
   }
 }
 
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = new CenelePlugin();
-}
+const plugin = new CenelePlugin();
+module.exports = { default: plugin };
