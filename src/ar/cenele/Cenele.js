@@ -1,13 +1,18 @@
-// Updated JS version for LNReader v2 with content protection handling
+// Final JS version for LNReader v2 with advanced de-obfuscation and encoding handling
 const fetchApi = async (url, options) => {
   const response = await fetch(url, options);
   if (!response.ok) throw new Error('Network response was not ok');
   return response;
 };
+
 const fetchHtml = async (url) => {
   const response = await fetchApi(url);
-  return response.text();
+  // Force UTF-8 decoding to fix the "scribbles" (UTF-8 misinterpreted as Latin-1)
+  const buffer = await response.arrayBuffer();
+  const decoder = new TextDecoder('utf-8');
+  return decoder.decode(buffer);
 };
+
 const defaultCover = 'https://via.placeholder.com/150';
 
 class CenelePlugin {
@@ -15,7 +20,7 @@ class CenelePlugin {
     this.id = 'cenele';
     this.name = 'Cenele';
     this.site = 'https://cenele.com/';
-    this.version = '1.0.1';
+    this.version = '1.0.2';
     this.icon = 'src/ar/cenele/icon.png';
     this.language = 'Arabic';
   }
@@ -46,9 +51,8 @@ class CenelePlugin {
     const url = this.site + novelPath;
     const body = await fetchHtml(url);
     const nameMatch = body.match(/<h1[^>]*>([^<]+)<\/h1>/);
-    const coverMatch = body.match(/<img[^>]*class="[^"]*img-responsive[^>]*"[^>]*src="([^"]+)"/);
+    const coverMatch = body.match(/<img[^>]*class="[^"]*img-responsive[^"]*".*?src="([^"]+)"/);
     
-    // Extract chapters
     const chapters = [];
     const chapterRegex = /<li class="wp-manga-chapter[^"]*">\s*<a href="([^"]+)">([^<]+)<\/a>/g;
     let match;
@@ -72,21 +76,29 @@ class CenelePlugin {
     const url = this.site + chapterPath;
     const body = await fetchHtml(url);
     
-    // Extract content from the reading-content div
     const contentMatch = body.match(/<div class="reading-content[^"]*">([\s\S]*?)<\/div>/);
     if (!contentMatch) return 'Content not found';
     
     let content = contentMatch[1];
     
-    // 1. Remove "stolen" messages and hidden text
+    // 1. Remove elements that are hidden or contain "stolen" messages
+    // This includes spans with display:none and specific anti-scraping text
     content = content.replace(/<span[^>]*style="[^"]*display:\s*none[^"]*"[^>]*>[\s\S]*?<\/span>/gi, '');
     content = content.replace(/<div[^>]*style="[^"]*display:\s*none[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
-    content = content.replace(/هذا الفصل مسروق من موقع فضاء الروايات/g, '');
-    content = content.replace(/cenele\.com/g, '');
     
-    // 2. Clean up HTML tags but keep basic formatting
+    // 2. Remove specific "stolen" phrases and tracking codes (e.g., #7eBjc5Xdd1)
+    content = content.replace(/هذا الفصل مسروق من موقع فضاء الروايات/g, '');
+    content = content.replace(/فصول مسروقة من موقع فضاء الروايات/g, '');
+    content = content.replace(/cenele\.com/gi, '');
+    content = content.replace(/https?:\/\/cenele\.com\//gi, '');
+    content = content.replace(/#[a-zA-Z0-9]{10}/g, ''); // Matches tracking codes like #7eBjc5Xdd1
+    
+    // 3. Clean up the remaining HTML tags but keep basic formatting
     content = content.replace(/<(?!p|br|b|i|strong|em)[^>]+>/gi, '');
-
+    
+    // 4. Final trim and cleanup of multiple line breaks
+    content = content.replace(/(\s*<br\s*\/?>\s*){3,}/gi, '<br><br>');
+    
     return content.trim();
   }
 }
