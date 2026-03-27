@@ -20,7 +20,7 @@ class CenelePlugin {
     this.id = 'cenele';
     this.name = 'Cenele';
     this.site = 'https://cenele.com/';
-    this.version = '1.0.2';
+    this.version = '1.0.14';
     this.icon = 'src/ar/cenele/icon.png';
     this.language = 'Arabic';
   }
